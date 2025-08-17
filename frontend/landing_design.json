@@ -1,0 +1,164 @@
+{
+  "designSystem": {
+    "name": "NebulaGlow",
+    "version": "1.0",
+    "description": "A dark-themed, futuristic UI kit characterized by neon glows, glassmorphism, and vibrant gradient accents. The aesthetic is clean, modern, and energetic, suitable for tech, gaming, or crypto applications."
+  },
+  "style": {
+    "theme": "dark",
+    "aesthetic": ["futuristic", "neon", "cyberpunk", "tech"],
+    "keyPrinciples": [
+      "High contrast between dark backgrounds and vibrant accents.",
+      "Use of glow and blur effects to create depth and emphasis.",
+      "Consistent application of rounded corners for a soft, modern feel.",
+      "Minimalist, line-art iconography."
+    ],
+    "effects": {
+      "glow": {
+        "description": "A soft, diffused outer glow on interactive elements, borders, and some text. Typically uses primary or secondary accent colors.",
+        "cssImplementation": "box-shadow: 0 0 15px 2px rgba(128, 0, 255, 0.4);"
+      },
+      "glassmorphism": {
+        "description": "Semi-transparent backgrounds with a frosted glass effect, used for containers and cards.",
+        "cssImplementation": "background: rgba(26, 16, 60, 0.5); backdrop-filter: blur(12px);"
+      }
+    }
+  },
+  "colors": {
+    "palette": {
+      "background": {
+        "primary": { "value": "#0A0618", "description": "Deep space navy/purple, primary UI background." },
+        "secondary": { "value": "#1A103C", "description": "Slightly lighter purple for cards and containers." }
+      },
+      "text": {
+        "primary": { "value": "#FFFFFF", "description": "Pure white for main headings and highlighted text." },
+        "secondary": { "value": "#E0D8FF", "description": "Off-white/light lavender for body copy." },
+        "tertiary": { "value": "#A9A9D4", "description": "Muted lavender/gray for placeholder text and disabled states." }
+      },
+      "accent": {
+        "primary": { "value": "#8A3FFC", "description": "Vibrant violet, used for primary actions, borders, and glows." },
+        "secondary": { "value": "#33B1FF", "description": "Bright cyan/blue, used for secondary highlights and gradients." },
+        "gradient": { "value": "linear-gradient(90deg, #33B1FF, #8A3FFC)", "description": "Primary gradient for buttons and hero elements." }
+      },
+      "stroke": {
+        "default": { "value": "#3A2B68", "description": "Subtle border for inactive or default containers." },
+        "interactive": { "value": "#8A3FFC", "description": "Glowing accent border for focused or interactive elements." }
+      }
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "primary": { "value": "'Inter', sans-serif", "description": "Main font for all UI text." },
+      "display": { "value": "'Poppins', sans-serif", "description": "Optional font for large, impactful headings." }
+    },
+    "scale": {
+      "h1": { "fontSize": "32px", "fontWeight": 700, "letterSpacing": "0.5px" },
+      "h2": { "fontSize": "24px", "fontWeight": 600 },
+      "h3": { "fontSize": "20px", "fontWeight": 600 },
+      "body": { "fontSize": "16px", "fontWeight": 400, "lineHeight": "1.5" },
+      "caption": { "fontSize": "14px", "fontWeight": 400 },
+      "label": { "fontSize": "12px", "fontWeight": 500, "textTransform": "uppercase", "letterSpacing": "1px" }
+    }
+  },
+  "layout": {
+    "grid": {
+      "baseUnit": "8px",
+      "columns": 12,
+      "gutter": "16px"
+    },
+    "spacing": {
+      "xs": "4px",
+      "sm": "8px",
+      "md": "16px",
+      "lg": "24px",
+      "xl": "32px",
+      "xxl": "48px"
+    },
+    "borderRadius": {
+      "small": "4px",
+      "medium": "8px",
+      "large": "12px",
+      "pill": "9999px"
+    },
+    "divider": {
+      "color": "rgba(58, 43, 104, 0.5)",
+      "height": "1px"
+    }
+  },
+  "components": {
+    "button": {
+      "base": {
+        "borderRadius": "$layout.borderRadius.medium",
+        "padding": "12px 24px",
+        "fontSize": "$typography.scale.body.fontSize",
+        "fontWeight": 600,
+        "transition": "all 0.2s ease-in-out"
+      },
+      "primary": {
+        "background": "$colors.accent.gradient",
+        "color": "$colors.text.primary",
+        "border": "none",
+        "hover": {
+          "transform": "scale(1.03)",
+          "boxShadow": "0 0 20px rgba(138, 63, 252, 0.5)"
+        }
+      },
+      "secondary": {
+        "background": "transparent",
+        "color": "$colors.text.secondary",
+        "border": "1px solid $colors.accent.primary",
+        "hover": {
+          "background": "rgba(138, 63, 252, 0.1)",
+          "boxShadow": "0 0 15px rgba(138, 63, 252, 0.3)"
+        }
+      }
+    },
+    "card": {
+      "background": "$colors.palette.background.secondary",
+      "borderRadius": "$layout.borderRadius.large",
+      "padding": "$layout.spacing.lg",
+      "border": "1px solid $colors.stroke.default",
+      "style": "Subtle glassmorphism effect can be applied.",
+      "variants": {
+        "interactive": {
+          "border": "1px solid $colors.accent.primary",
+          "boxShadow": "$style.effects.glow.cssImplementation"
+        }
+      }
+    },
+    "inputField": {
+      "background": "rgba(10, 6, 24, 0.7)",
+      "color": "$colors.text.secondary",
+      "borderRadius": "$layout.borderRadius.medium",
+      "border": "1px solid $colors.stroke.default",
+      "padding": "12px 16px",
+      "placeholderColor": "$colors.text.tertiary",
+      "focus": {
+        "border": "1px solid $colors.accent.primary",
+        "boxShadow": "0 0 10px rgba(138, 63, 252, 0.4)"
+      }
+    },
+    "icon": {
+      "style": "line-art",
+      "strokeWidth": "1.5px",
+      "size": "24px",
+      "color": "$colors.text.secondary"
+    },
+    "tag": {
+      "borderRadius": "$layout.borderRadius.pill",
+      "padding": "4px 12px",
+      "fontSize": "$typography.scale.caption.fontSize",
+      "fontWeight": 500,
+      "variants": {
+        "primary": {
+          "background": "rgba(138, 63, 252, 0.2)",
+          "color": "#C49BFF"
+        },
+        "secondary": {
+          "background": "rgba(51, 177, 255, 0.2)",
+          "color": "#87CEEB"
+        }
+      }
+    }
+  }
+}

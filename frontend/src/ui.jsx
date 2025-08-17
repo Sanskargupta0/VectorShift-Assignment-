@@ -1,15 +1,19 @@
-// ui.js
-// Displays the drag-and-drop UI
-// --------------------------------------------------
-
 import { useState, useRef, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MiniMap } from 'reactflow';
 import { useStore } from './store';
+import { useStoreWithEqualityFn } from 'zustand/traditional';
 import { shallow } from 'zustand/shallow';
-import { InputNode } from './nodes/inputNode';
-import { LLMNode } from './nodes/llmNode';
-import { OutputNode } from './nodes/outputNode';
-import { TextNode } from './nodes/textNode';
+import { 
+  InputNode, 
+  OutputNode, 
+  LLMNode, 
+  TextNode,
+  FilterNode,
+  TransformNode,
+  ConditionalNode,
+  AggregatorNode,
+  DelayNode
+} from './components/nodeFactory';
 
 import 'reactflow/dist/style.css';
 
@@ -20,6 +24,11 @@ const nodeTypes = {
   llm: LLMNode,
   customOutput: OutputNode,
   text: TextNode,
+  filter: FilterNode,
+  transform: TransformNode,
+  conditional: ConditionalNode,
+  aggregator: AggregatorNode,
+  delay: DelayNode,
 };
 
 const selector = (state) => ({
@@ -43,7 +52,7 @@ export const PipelineUI = () => {
       onNodesChange,
       onEdgesChange,
       onConnect
-    } = useStore(selector, shallow);
+    } = useStoreWithEqualityFn(useStore, selector, shallow);
 
     const getInitNodeData = (nodeID, type) => {
       let nodeData = { id: nodeID, nodeType: `${type}` };
@@ -64,7 +73,7 @@ export const PipelineUI = () => {
               return;
             }
       
-            const position = reactFlowInstance.project({
+            const position = reactFlowInstance.screenToFlowPosition({
               x: event.clientX - reactFlowBounds.left,
               y: event.clientY - reactFlowBounds.top,
             });
@@ -80,7 +89,7 @@ export const PipelineUI = () => {
             addNode(newNode);
           }
         },
-        [reactFlowInstance]
+        [reactFlowInstance, getNodeID, addNode]
     );
 
     const onDragOver = useCallback((event) => {
