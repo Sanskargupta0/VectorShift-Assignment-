@@ -83,6 +83,41 @@ export const BaseNode = ({
     }));
   }, []);
 
+  // Calculate dynamic height for text node based on content
+  const calculateTextHeight = useCallback((text, nodeMinHeight) => {
+    if (!text || title !== 'Text') return null;
+    
+    // Use the actual minHeight from config (160px for text nodes)
+    const baseMinHeight = nodeMinHeight || 160;
+    
+    // Calculate the height needed for the textarea content
+    const charsPerLine = 35; // Approximate characters per line based on node width
+    
+    // Count lines based on actual line breaks and text wrapping
+    const lines = text.split('\n');
+    let totalLines = 0;
+    
+    lines.forEach(line => {
+      if (line.length === 0) {
+        totalLines += 1; // Empty line
+      } else {
+        totalLines += Math.ceil(line.length / charsPerLine);
+      }
+    });
+    
+    // Minimum 3 lines for better UX
+    totalLines = Math.max(totalLines, 3);
+    
+    // Calculate textarea height (matching the textarea component calculation)
+    const textAreaHeight = Math.max(totalLines * 20 + 20, 80); // Same as in textarea style
+    
+    const nodeStructureHeight = 200;
+    const totalCalculatedHeight = nodeStructureHeight + textAreaHeight;
+    
+    // Always respect the minHeight
+    return Math.max(totalCalculatedHeight, baseMinHeight);
+  }, [title]);
+
   // Single toggle handler for expand/collapse
   const handleToggle = useCallback(() => {
     setIsMinimized(!isMinimized);
@@ -101,25 +136,41 @@ export const BaseNode = ({
   }, [id, onDelete, data?.onDelete]);
 
   // Memoize the base style to prevent unnecessary re-renders
-  const baseStyle = useMemo(() => ({
-    width: isMinimized ? '280px' : (width === 'auto' ? 'fit-content' : width),
-    height: isMinimized ? '60px' : (height === 'auto' ? 'fit-content' : height),
-    minWidth: isMinimized ? '280px' : minWidth,
-    minHeight: isMinimized ? '60px' : minHeight,
-    maxWidth: '400px',
-    maxHeight: isMinimized ? '60px' : '600px',
-    border: '2px solid #E1E5E9',
-    padding: '0',
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    fontSize: '14px',
-    fontFamily: '"Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-    overflow: 'hidden',
-    position: 'relative',
-    transition: 'all 0.3s ease-in-out',
-    ...style
-  }), [width, height, minWidth, minHeight, style, isMinimized]);
+  const baseStyle = useMemo(() => {
+    let dynamicHeight = height;
+    let dynamicMinHeight = minHeight;
+    
+    // For text nodes, calculate dynamic height based on text content
+    if (title === 'Text') {
+      const textContent = fieldValues.text || '';
+      const calculatedHeight = calculateTextHeight(textContent, minHeight);
+      if (calculatedHeight) {
+        // Use the calculated height directly (it already respects minHeight)
+        dynamicHeight = isMinimized ? '60px' : `${calculatedHeight}px`;
+        dynamicMinHeight = isMinimized ? '60px' : minHeight;
+      }
+    }
+    
+    return {
+      width: isMinimized ? '280px' : (width === 'auto' ? 'fit-content' : width),
+      height: isMinimized ? '60px' : (dynamicHeight === 'auto' ? 'fit-content' : dynamicHeight),
+      minWidth: isMinimized ? '280px' : minWidth,
+      minHeight: isMinimized ? '60px' : dynamicMinHeight,
+      maxWidth: '400px',
+      maxHeight: isMinimized ? '60px' : '800px', // Increased maxHeight to allow for larger text areas
+      border: '2px solid #E1E5E9',
+      padding: '0',
+      backgroundColor: 'white',
+      borderRadius: '12px',
+      fontSize: '14px',
+      fontFamily: '"Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      overflow: 'hidden',
+      position: 'relative',
+      transition: 'all 0.3s ease-in-out',
+      ...style
+    };
+  }, [width, height, minWidth, minHeight, style, isMinimized, title, fieldValues.text, calculateTextHeight]);
 
   // Memoize the field renderer to prevent unnecessary re-renders
   const renderField = useMemo(() => (field) => {
@@ -209,28 +260,48 @@ export const BaseNode = ({
             </select>
           </div>
         );
-      case 'textarea':
+      case 'textarea': {
+        const textValue = value || '';
+        const lineCount = Math.max(
+          3, // Minimum 3 lines
+          textValue.split('\n').reduce((count, line) => {
+            if (line.length === 0) return count + 1;
+            return count + Math.ceil(line.length / 35); // ~35 chars per line
+          }, 0)
+        );
+        
         return (
-          <div key={key} style={{ marginBottom: '4px' }}>
-            <label style={{ display: 'block', fontSize: '10px', marginBottom: '2px' }}>
-              {label}:
+          <div key={key} style={{ marginBottom: '8px' }}>
+            <label style={labelStyle}>
+              {label}
             </label>
             <textarea
-              value={value}
+              value={textValue}
               placeholder={placeholder}
               onChange={(e) => handleFieldChange(key, e.target.value)}
-              rows={2}
+              rows={lineCount}
               style={{ 
-                width: '100%', 
-                fontSize: '10px', 
-                padding: '2px',
-                border: '1px solid #ccc',
-                borderRadius: '2px',
-                resize: 'vertical'
+                ...defaultFieldStyle,
+                fontSize: '14px', 
+                padding: '10px 12px',
+                minHeight: `${Math.max(lineCount * 20 + 20, 80)}px`,
+                resize: 'none', // Disable manual resize since we're auto-resizing
+                lineHeight: '20px',
+                fontFamily: 'inherit',
+                backgroundColor: '#FAFAFA'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#4A90E2';
+                e.target.style.backgroundColor = '#FFFFFF';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#E1E5E9';
+                e.target.style.backgroundColor = '#FAFAFA';
               }}
             />
           </div>
         );
+      }
       default:
         return null;
     }

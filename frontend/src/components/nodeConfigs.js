@@ -95,26 +95,7 @@ export const createNodeConfig = (type, customConfig = {}) => {
         }
       ],
       fields: [
-        {
-          key: 'inputName',
-          label: '',
-          type: 'display',
-          placeholder: 'input_0',
-          defaultValue: 'input_0',
-          style: {
-            width: '100%',
-            padding: '10px 16px',
-            backgroundColor: '#E8E7FF',
-            border: '1px solid #D1C4E9',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: '500',
-            color: '#4A148C',
-            textAlign: 'center',
-            marginBottom: '12px',
-            cursor: 'default'
-          }
-        },
+       
         {
           key: 'inputType',
           label: 'Type',
@@ -156,22 +137,7 @@ export const createNodeConfig = (type, customConfig = {}) => {
         }
       ],
       fields: [
-        {
-          key: 'outputName',
-          label: 'Name',
-          type: 'text',
-          placeholder: 'output_0',
-          defaultValue: 'output_0',
-          style: {
-            width: '100%',
-            padding: '8px 12px',
-            border: '1px solid #E1E5E9',
-            borderRadius: '6px',
-            fontSize: '14px',
-            backgroundColor: '#F8F9FA',
-            marginBottom: '8px'
-          }
-        },
+
         {
           key: 'outputType',
           label: 'Type',
