@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Toaster } from 'sonner';
 import { PipelineToolbar, ToolbarToggleButton } from './toolbar';
 import { PipelineUI } from './ui';
 import { SubmitButton } from './submit';
@@ -8,6 +9,21 @@ function App() {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+      {/* Toast Container */}
+      <Toaster 
+        position="top-right" 
+        richColors 
+        closeButton 
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+          }
+        }}
+      />
       
       <div style={{
         position: 'absolute',
