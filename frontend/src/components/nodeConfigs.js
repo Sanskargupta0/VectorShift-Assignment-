@@ -1,30 +1,119 @@
 import { Position } from 'reactflow';
+import { 
+  FiDownload, 
+  FiUpload, 
+  FiCpu, 
+  FiFileText, 
+  FiFilter, 
+  FiRotateCw, 
+  FiGitBranch, 
+  FiLayers, 
+  FiClock,
+  FiSearch 
+} from 'react-icons/fi';
+
+
+const getBaseNodeStyle = (borderColor, backgroundColor = '#fff', gradientColor = null) => ({
+  background: gradientColor ? `linear-gradient(135deg, ${backgroundColor} 0%, ${gradientColor} 100%)` : backgroundColor,
+  border: `2px solid ${borderColor}`,
+  borderRadius: '12px',
+  color: '#333',
+  fontFamily: '"Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+  display: 'flex',
+  flexDirection: 'column',
+  minWidth: '200px',
+  minHeight: '85px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.2s ease-in-out',
+  cursor: 'pointer',
+  position: 'relative',
+  zIndex: 1  // Ensure node is above background but handles can be above it
+});
+
+// Helper function to create consistent handle styles
+const createHandleStyle = (color, position) => {
+  const baseStyle = {
+    background: color,
+    width: '16px',
+    height: '16px',
+    border: '3px solid white',
+    boxShadow: `0 2px 8px ${color}66`,  // Add transparency to color for shadow
+    borderRadius: '50%',
+    zIndex: 10,  // Ensure handles are always on top
+    position: 'fixed',
+    transform: 'translate(-50%, -50%)',  // Center the handle perfectly
+  };
+
+  // Add position-specific styles to center on borders
+  switch (position) {
+    case Position.Left:
+      return {
+        ...baseStyle,
+        left: '0px',
+        top: '50%',
+      };
+    case Position.Right:
+      return {
+        ...baseStyle,
+        right: '-14px',
+        top: '50%',
+      };
+    case Position.Top:
+      return {
+        ...baseStyle,
+        top: '0px',
+        left: '50%',
+      };
+    case Position.Bottom:
+      return {
+        ...baseStyle,
+        bottom: '0px',
+        left: '50%',
+      };
+    default:
+      return baseStyle;
+  }
+};
 
 export const createNodeConfig = (type, customConfig = {}) => {
   const baseConfigs = {
     input: {
       title: 'Input',
-      description: 'Data input node',
-      width: 200,
-      height: 120,
-      style: {
-        backgroundColor: '#e8f5e8',
-        borderColor: '#4caf50'
-      },
+      description: 'Pass data of different types into your workflow',
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 160,
+      style: getBaseNodeStyle('#4A90E2', '#F8FBFF', '#E8F4FF'),
+      icon: FiDownload,
       handles: [
         {
           type: 'source',
           position: Position.Right,
-          id: 'value'
+          id: 'value',
+          style: createHandleStyle('#4A90E2', Position.Right)
         }
       ],
       fields: [
         {
           key: 'inputName',
-          label: 'Name',
-          type: 'text',
-          placeholder: 'Enter input name',
-          defaultValue: 'input_1'
+          label: '',
+          type: 'display',
+          placeholder: 'input_0',
+          defaultValue: 'input_0',
+          style: {
+            width: '100%',
+            padding: '10px 16px',
+            backgroundColor: '#E8E7FF',
+            border: '1px solid #D1C4E9',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: '500',
+            color: '#4A148C',
+            textAlign: 'center',
+            marginBottom: '12px',
+            cursor: 'default'
+          }
         },
         {
           key: 'inputType',
@@ -35,25 +124,35 @@ export const createNodeConfig = (type, customConfig = {}) => {
             { value: 'File', label: 'File' },
             { value: 'Number', label: 'Number' }
           ],
-          defaultValue: 'Text'
+          defaultValue: 'Text',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }
         }
       ]
     },
 
     output: {
       title: 'Output',
-      description: 'Data output node',
-      width: 200,
-      height: 120,
-      style: {
-        backgroundColor: '#ffe8e8',
-        borderColor: '#f44336'
-      },
+      description: 'Output processed data from your workflow',
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 160,
+      style: getBaseNodeStyle('#FF6B6B', '#FFF8F8', '#FFE8E8'),
+      icon: FiUpload,
       handles: [
         {
           type: 'target',
           position: Position.Left,
-          id: 'value'
+          id: 'value',
+          style: createHandleStyle('#FF6B6B', Position.Left)
         }
       ],
       fields: [
@@ -61,8 +160,17 @@ export const createNodeConfig = (type, customConfig = {}) => {
           key: 'outputName',
           label: 'Name',
           type: 'text',
-          placeholder: 'Enter output name',
-          defaultValue: 'output_1'
+          placeholder: 'output_0',
+          defaultValue: 'output_0',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: '#F8F9FA',
+            marginBottom: '8px'
+          }
         },
         {
           key: 'outputType',
@@ -73,39 +181,55 @@ export const createNodeConfig = (type, customConfig = {}) => {
             { value: 'Image', label: 'Image' },
             { value: 'File', label: 'File' }
           ],
-          defaultValue: 'Text'
+          defaultValue: 'Text',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }
         }
       ]
     },
 
     llm: {
       title: 'LLM',
-      description: 'Large Language Model',
-      width: 220,
-      height: 100,
-      style: {
-        backgroundColor: '#f0f8ff',
-        borderColor: '#2196f3'
-      },
+      description: 'Large Language Model processing',
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 180,
+      style: getBaseNodeStyle('#8B5CF6', '#F8F4FF', '#F0E7FF'),
+      icon: FiCpu,
       handles: [
         {
           type: 'target',
           position: Position.Left,
           id: 'system',
-          style: { top: '33%' },
+          style: { 
+            ...createHandleStyle('#8B5CF6', Position.Left),
+            top: '33%'
+          },
           label: 'System'
         },
         {
           type: 'target',
           position: Position.Left,
           id: 'prompt',
-          style: { top: '66%' },
+          style: { 
+            ...createHandleStyle('#8B5CF6', Position.Left),
+            top: '66%'
+          },
           label: 'Prompt'
         },
         {
           type: 'source',
           position: Position.Right,
           id: 'response',
+          style: createHandleStyle('#8B5CF6', Position.Right),
           label: 'Response'
         }
       ],
@@ -119,7 +243,16 @@ export const createNodeConfig = (type, customConfig = {}) => {
             { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
             { value: 'claude-3', label: 'Claude 3' }
           ],
-          defaultValue: 'gpt-4'
+          defaultValue: 'gpt-4',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }
         }
       ]
     },
@@ -127,17 +260,18 @@ export const createNodeConfig = (type, customConfig = {}) => {
     text: {
       title: 'Text',
       description: 'Text processing node',
-      width: 200,
-      height: 120,
-      style: {
-        backgroundColor: '#fff8e1',
-        borderColor: '#ff9800'
-      },
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 160,
+      style: getBaseNodeStyle('#ff9800', '#fff3e0', '#FFE0B2'),
+      icon: FiFileText,
       handles: [
         {
           type: 'source',
           position: Position.Right,
-          id: 'output'
+          id: 'output',
+          style: createHandleStyle('#ff9800', Position.Right)
         }
       ],
       fields: [
@@ -146,7 +280,17 @@ export const createNodeConfig = (type, customConfig = {}) => {
           label: 'Text',
           type: 'textarea',
           placeholder: 'Enter text...',
-          defaultValue: '{{input}}'
+          defaultValue: '{{input}}',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            minHeight: '60px',
+            resize: 'vertical'
+          }
         }
       ]
     },
@@ -155,23 +299,25 @@ export const createNodeConfig = (type, customConfig = {}) => {
     filter: {
       title: 'Filter',
       description: 'Data filtering node',
-      width: 200,
-      height: 140,
-      style: {
-        backgroundColor: '#f3e5f5',
-        borderColor: '#9c27b0'
-      },
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 180,
+      style: getBaseNodeStyle('#9c27b0', '#f3e5f5', '#E1BEE7'),
+      icon: FiFilter,
       handles: [
         {
           type: 'target',
           position: Position.Left,
           id: 'input',
+          style: createHandleStyle('#9c27b0', Position.Left),
           label: 'Data'
         },
         {
           type: 'source',
           position: Position.Right,
           id: 'output',
+          style: createHandleStyle('#9c27b0', Position.Right),
           label: 'Filtered'
         }
       ],
@@ -187,13 +333,30 @@ export const createNodeConfig = (type, customConfig = {}) => {
             { value: 'greater', label: 'Greater Than' },
             { value: 'less', label: 'Less Than' }
           ],
-          defaultValue: 'contains'
+          defaultValue: 'contains',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }
         },
         {
           key: 'filterValue',
           label: 'Filter Value',
           type: 'text',
-          placeholder: 'Enter filter criteria'
+          placeholder: 'Enter filter criteria',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white'
+          }
         }
       ]
     },
@@ -201,23 +364,25 @@ export const createNodeConfig = (type, customConfig = {}) => {
     transform: {
       title: 'Transform',
       description: 'Data transformation node',
-      width: 200,
-      height: 160,
-      style: {
-        backgroundColor: '#e1f5fe',
-        borderColor: '#00bcd4'
-      },
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 180,
+      style: getBaseNodeStyle('#00bcd4', '#e0f2f1', '#B2EBF2'),
+      icon: FiRotateCw,
       handles: [
         {
           type: 'target',
           position: Position.Left,
           id: 'input',
+          style: createHandleStyle('#00bcd4', Position.Left),
           label: 'Data'
         },
         {
           type: 'source',
           position: Position.Right,
           id: 'output',
+          style: createHandleStyle('#00bcd4', Position.Right),
           label: 'Transformed'
         }
       ],
@@ -233,13 +398,30 @@ export const createNodeConfig = (type, customConfig = {}) => {
             { value: 'replace', label: 'Find & Replace' },
             { value: 'split', label: 'Split Text' }
           ],
-          defaultValue: 'uppercase'
+          defaultValue: 'uppercase',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }
         },
         {
           key: 'parameter',
           label: 'Parameter',
           type: 'text',
-          placeholder: 'Optional parameter'
+          placeholder: 'Optional parameter',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white'
+          }
         }
       ]
     },
@@ -247,38 +429,51 @@ export const createNodeConfig = (type, customConfig = {}) => {
     conditional: {
       title: 'Conditional',
       description: 'Conditional logic node',
-      width: 200,
-      height: 180,
-      style: {
-        backgroundColor: '#fff3e0',
-        borderColor: '#ff5722'
-      },
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 200,
+      style: getBaseNodeStyle('#ff5722', '#fbe9e7', '#FFCCBC'),
+      icon: FiGitBranch,
       handles: [
         {
           type: 'target',
           position: Position.Left,
           id: 'input',
+          style: {
+            ...createHandleStyle('#ff5722', Position.Left),
+            top: '40%'
+          },
           label: 'Input'
         },
         {
           type: 'target',
           position: Position.Left,
           id: 'condition',
-          style: { top: '70%' },
+          style: { 
+            ...createHandleStyle('#ff5722', Position.Left),
+            top: '70%'
+          },
           label: 'Condition'
         },
         {
           type: 'source',
           position: Position.Right,
           id: 'true',
-          style: { top: '30%' },
+          style: { 
+            ...createHandleStyle('#ff5722', Position.Right),
+            top: '30%'
+          },
           label: 'True'
         },
         {
           type: 'source',
           position: Position.Right,
           id: 'false',
-          style: { top: '70%' },
+          style: { 
+            ...createHandleStyle('#ff5722', Position.Right),
+            top: '70%'
+          },
           label: 'False'
         }
       ],
@@ -294,13 +489,30 @@ export const createNodeConfig = (type, customConfig = {}) => {
             { value: 'greater', label: 'Greater Than' },
             { value: 'less', label: 'Less Than' }
           ],
-          defaultValue: 'equals'
+          defaultValue: 'equals',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }
         },
         {
           key: 'value',
           label: 'Compare Value',
           type: 'text',
-          placeholder: 'Value to compare against'
+          placeholder: 'Value to compare against',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white'
+          }
         }
       ]
     },
@@ -308,38 +520,48 @@ export const createNodeConfig = (type, customConfig = {}) => {
     aggregator: {
       title: 'Aggregator',
       description: 'Data aggregation node',
-      width: 200,
-      height: 160,
-      style: {
-        backgroundColor: '#f1f8e9',
-        borderColor: '#8bc34a'
-      },
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 200,
+      style: getBaseNodeStyle('#8bc34a', '#f1f8e9', '#DCEDC8'),
+      icon: FiLayers,
       handles: [
         {
           type: 'target',
           position: Position.Left,
           id: 'input1',
-          style: { top: '25%' },
+          style: { 
+            ...createHandleStyle('#8bc34a', Position.Left),
+            top: '25%'
+          },
           label: 'Input 1'
         },
         {
           type: 'target',
           position: Position.Left,
           id: 'input2',
-          style: { top: '50%' },
+          style: { 
+            ...createHandleStyle('#8bc34a', Position.Left),
+            top: '50%'
+          },
           label: 'Input 2'
         },
         {
           type: 'target',
           position: Position.Left,
           id: 'input3',
-          style: { top: '75%' },
+          style: { 
+            ...createHandleStyle('#8bc34a', Position.Left),
+            top: '75%'
+          },
           label: 'Input 3'
         },
         {
           type: 'source',
           position: Position.Right,
           id: 'output',
+          style: createHandleStyle('#8bc34a', Position.Right),
           label: 'Combined'
         }
       ],
@@ -354,14 +576,31 @@ export const createNodeConfig = (type, customConfig = {}) => {
             { value: 'sum', label: 'Sum' },
             { value: 'average', label: 'Average' }
           ],
-          defaultValue: 'concat'
+          defaultValue: 'concat',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }
         },
         {
           key: 'separator',
           label: 'Separator',
           type: 'text',
           placeholder: 'Optional separator',
-          defaultValue: ', '
+          defaultValue: ', ',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white'
+          }
         }
       ]
     },
@@ -369,23 +608,25 @@ export const createNodeConfig = (type, customConfig = {}) => {
     delay: {
       title: 'Delay',
       description: 'Delay execution node',
-      width: 200,
-      height: 140,
-      style: {
-        backgroundColor: '#fce4ec',
-        borderColor: '#e91e63'
-      },
+      width: 'auto',
+      height: 'auto',
+      minWidth: 280,
+      minHeight: 180,
+      style: getBaseNodeStyle('#e91e63', '#fce4ec', '#F8BBD9'),
+      icon: FiClock,
       handles: [
         {
           type: 'target',
           position: Position.Left,
           id: 'input',
+          style: createHandleStyle('#e91e63', Position.Left),
           label: 'Input'
         },
         {
           type: 'source',
           position: Position.Right,
           id: 'output',
+          style: createHandleStyle('#e91e63', Position.Right),
           label: 'Output'
         }
       ],
@@ -395,7 +636,15 @@ export const createNodeConfig = (type, customConfig = {}) => {
           label: 'Duration (ms)',
           type: 'text',
           placeholder: '1000',
-          defaultValue: '1000'
+          defaultValue: '1000',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white'
+          }
         },
         {
           key: 'unit',
@@ -406,7 +655,16 @@ export const createNodeConfig = (type, customConfig = {}) => {
             { value: 's', label: 'Seconds' },
             { value: 'm', label: 'Minutes' }
           ],
-          defaultValue: 'ms'
+          defaultValue: 'ms',
+          style: {
+            width: '100%',
+            padding: '8px 12px',
+            border: '1px solid #E1E5E9',
+            borderRadius: '6px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }
         }
       ]
     }
@@ -417,6 +675,7 @@ export const createNodeConfig = (type, customConfig = {}) => {
     throw new Error(`Unknown node type: ${type}`);
   }
 
+  // Merge with custom configuration
   return {
     ...config,
     ...customConfig,
@@ -437,3 +696,6 @@ export const getAvailableNodeTypes = () => Object.keys({
   aggregator: true,
   delay: true
 });
+
+
+export const SearchIcon = FiSearch;
